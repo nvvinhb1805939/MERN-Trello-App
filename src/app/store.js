@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import baseReducer from 'features/BaseFeature/baseSlice';
+import userReducer from 'features/UserFeature/userSlice';
 
 const rootReducer = {
-  base: baseReducer,
+  base: userReducer,
 };
 
 const store = configureStore({
