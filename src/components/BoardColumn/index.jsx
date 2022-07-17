@@ -1,8 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Box, OutlinedInput, Button, Stack, List } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Box, Button, OutlinedInput, Stack } from '@mui/material';
 import CardColumn from 'components/CardColumn';
+import { Container, Draggable } from 'react-smooth-dnd';
 
 BoardColumn.propTypes = {};
 
@@ -10,7 +9,7 @@ function BoardColumn(props) {
   return (
     <Box
       component='article'
-      sx={{ flexBasis: 280, flexShrink: 0, height: '100%', color: 'background.contrastText', overflowY: 'hidden' }}
+      sx={{ width: 280, height: '100%', ml: 2, color: 'background.contrastText', overflowY: 'hidden' }}
     >
       <Stack spacing={1} sx={{ maxHeight: '100%', bgcolor: 'background.main', borderRadius: 1 }}>
         <Box sx={{ p: 1, pb: 0 }}>
@@ -42,17 +41,14 @@ function BoardColumn(props) {
             }}
           />
         </Box>
-        {/* <List
+        <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-            maxHeight: '100%',
-
             py: 0,
             pl: 1,
             pr: 0.5,
-            mr: '4px !important',
+            mr: '4px !important', // 0.5 * 8 = 4px
+
+            maxHeight: '100%',
             overflowY: 'auto',
 
             '&::-webkit-scrollbar': {
@@ -68,21 +64,76 @@ function BoardColumn(props) {
                 borderRadius: 2,
               },
             },
+
+            '& > .smooth-dnd-container.vertical': {
+              '& .card-drop-preview': {
+                mt: 1,
+                bgcolor: 'blur.secondary',
+                border: '1px dashed',
+                borderColor: 'blur.border',
+                borderRadius: 1,
+              },
+
+              '& .card-ghost': {
+                transition: 'transform 0.18s ease',
+                transform: 'rotateZ(5deg)',
+              },
+
+              '& .card-ghost-drop': {
+                transition: 'transform 0.18s ease-in-out',
+                transform: 'rotateZ(0deg)',
+              },
+            },
           }}
         >
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-          <CardColumn />
-        </List> */}
+          <Container
+            groupName='sub-col'
+            dragClass='card-ghost'
+            dropClass='card-ghost-drop'
+            dropPlaceholder={{
+              animationDuration: 150,
+              showOnTop: true,
+              className: 'card-drop-preview',
+            }}
+          >
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+            <Draggable>
+              <CardColumn />
+            </Draggable>
+          </Container>
+        </Box>
         <Box sx={{ p: 1, pt: 0 }}>
           <Button
             fullWidth

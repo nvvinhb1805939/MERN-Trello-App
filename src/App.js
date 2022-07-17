@@ -6,6 +6,7 @@ import background from 'assets/imgs/background.jpg';
 import Header from 'components/Header';
 import BoardColumn from 'components/BoardColumn';
 import AddIcon from '@mui/icons-material/Add';
+import { Container, Draggable } from 'react-smooth-dnd';
 
 function App() {
   return (
@@ -17,15 +18,16 @@ function App() {
         <Stack direction='row' sx={{ position: 'relative', height: '100%' }} component='main'>
           <Stack
             direction='row'
-            spacing={2}
             sx={{
               flexWrap: 'nowrap',
-              position: 'absolute',
-              inset: 0,
-
               mb: 1,
-              px: 2,
               py: 5,
+
+              position: 'absolute',
+              top: 0,
+              right: 16,
+              bottom: 0,
+              left: 16,
 
               overflowX: 'auto',
               overflowY: 'hidden',
@@ -51,15 +53,21 @@ function App() {
                   },
                 },
               },
+
+              '& > .smooth-dnd-container.horizontal': {
+                display: 'flex',
+                minWidth: 'unset',
+
+                '& .column-drop-preview': {
+                  ml: 2,
+                  bgcolor: 'blur.main',
+                  border: '1px dashed',
+                  borderColor: 'background.main',
+                  borderRadius: 1,
+                },
+              },
             }}
           >
-            {/* <BoardColumn />
-            <BoardColumn />
-            <BoardColumn />
-            <BoardColumn />
-            <BoardColumn />
-            <BoardColumn />
-            <BoardColumn /> */}
             <Box sx={{ height: 'fit-content', flexShrink: 0 }}>
               <Button
                 fullWidth
@@ -70,12 +78,61 @@ function App() {
                   fontSize: 14,
                   textTransform: 'unset',
                   color: 'primary.contrastText',
-                  bgcolor: '#ffffff3d',
+                  bgcolor: 'rgba(0, 0, 0, 0.25)',
+
+                  '&:hover': {
+                    bgcolor: '#ffffff3d',
+                  },
                 }}
               >
                 Add another column
               </Button>
             </Box>
+            <Container
+              groupName='col'
+              orientation='horizontal'
+              onDragStart={e => console.log('drag started', e)}
+              onDragEnd={e => console.log('drag end', e)}
+              onDrop={e => console.log('dop', e)}
+              dragClass='card-ghost'
+              dropClass='card-ghost-drop'
+              onDragEnter={() => {
+                console.log('drag enter:');
+              }}
+              onDragLeave={() => {
+                console.log('drag leave:');
+              }}
+              onDropReady={p => console.log('Drop ready: ', p)}
+              dropPlaceholder={{
+                animationDuration: 150,
+                showOnTop: true,
+                className: 'column-drop-preview',
+              }}
+              dropPlaceholderAnimationDuration={200}
+              lockAxis='x'
+            >
+              <Draggable>
+                <BoardColumn />
+              </Draggable>
+              <Draggable>
+                <BoardColumn />
+              </Draggable>
+              <Draggable>
+                <BoardColumn />
+              </Draggable>
+              <Draggable>
+                <BoardColumn />
+              </Draggable>
+              <Draggable>
+                <BoardColumn />
+              </Draggable>
+              <Draggable>
+                <BoardColumn />
+              </Draggable>
+              <Draggable>
+                <BoardColumn />
+              </Draggable>
+            </Container>
           </Stack>
         </Stack>
       </Stack>
