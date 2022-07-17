@@ -12,6 +12,8 @@ const theme = createTheme({
     },
     blur: {
       main: 'rgba(0, 0, 0, 0.25)',
+      secondary: '#9696c81a',
+      border: '#abc',
       contrastText: '#fff',
     },
     background: {
