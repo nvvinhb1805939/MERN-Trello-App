@@ -1,14 +1,116 @@
+import AddIcon from '@mui/icons-material/Add';
+import { Box, Button, Stack } from '@mui/material';
 import { ThemeProvider } from '@mui/system';
-import theme from 'styles/Style';
-import { Stack, Box, Button } from '@mui/material';
 import 'App.css';
 import background from 'assets/imgs/background.jpg';
-import Header from 'components/Header';
 import BoardColumn from 'components/BoardColumn';
-import AddIcon from '@mui/icons-material/Add';
+import Header from 'components/Header';
+import { useState } from 'react';
 import { Container, Draggable } from 'react-smooth-dnd';
+import theme from 'styles/Style';
+import { v4 as uuidv4 } from 'uuid';
 
 function App() {
+  const [columns, setColumns] = useState([
+    {
+      columnId: uuidv4(),
+      columnTitle: 'Learn English',
+      cards: [
+        { cardId: uuidv4(), cardTitle: 'Vocabulary' },
+        { cardId: uuidv4(), cardTitle: 'Grammar' },
+        { cardId: uuidv4(), cardTitle: 'Listening' },
+      ],
+    },
+    {
+      columnId: uuidv4(),
+      columnTitle: 'Learn Programming',
+      cards: [
+        { cardId: uuidv4(), cardTitle: 'Fundamentally Knowledge' },
+        { cardId: uuidv4(), cardTitle: 'Algorithm & Datastructure' },
+      ],
+    },
+    {
+      columnId: uuidv4(),
+      columnTitle: 'Activities',
+      cards: [
+        { cardId: uuidv4(), cardTitle: 'Playing football' },
+        { cardId: uuidv4(), cardTitle: 'Running' },
+        { cardId: uuidv4(), cardTitle: 'Gym' },
+        { cardId: uuidv4(), cardTitle: 'Street workout' },
+        { cardId: uuidv4(), cardTitle: 'Meditating' },
+        { cardId: uuidv4(), cardTitle: 'Playing football' },
+        { cardId: uuidv4(), cardTitle: 'Running' },
+        { cardId: uuidv4(), cardTitle: 'Gym' },
+        { cardId: uuidv4(), cardTitle: 'Street workout' },
+        { cardId: uuidv4(), cardTitle: 'Meditating' },
+        { cardId: uuidv4(), cardTitle: 'Playing football' },
+        { cardId: uuidv4(), cardTitle: 'Running' },
+        { cardId: uuidv4(), cardTitle: 'Gym' },
+        { cardId: uuidv4(), cardTitle: 'Street workout' },
+        { cardId: uuidv4(), cardTitle: 'Meditating' },
+      ],
+    },
+    {
+      columnId: uuidv4(),
+      columnTitle: 'Arcade',
+      cards: [
+        { cardId: uuidv4(), cardTitle: 'Listening music' },
+        { cardId: uuidv4(), cardTitle: 'Playing video games' },
+        { cardId: uuidv4(), cardTitle: 'Watching movie' },
+      ],
+    },
+    {
+      columnId: uuidv4(),
+      columnTitle: 'Go out',
+      cards: [
+        { cardId: uuidv4(), cardTitle: 'Coffeeshop' },
+        { cardId: uuidv4(), cardTitle: 'Shopping' },
+      ],
+    },
+    {
+      columnId: uuidv4(),
+      columnTitle: 'Intend',
+      cards: [],
+    },
+  ]);
+
+  const getCardPayload = (columnId, cardIndex) => columns.find(column => column.columnId === columnId).cards[cardIndex];
+
+  const applyDrag = (arr, dragResult) => {
+    const { removedIndex, addedIndex, payload } = dragResult;
+    if (removedIndex === null && addedIndex === null) return arr;
+
+    const result = [...arr];
+    let itemToAdd = payload;
+
+    if (removedIndex !== null) {
+      itemToAdd = result.splice(removedIndex, 1)[0];
+    }
+
+    if (addedIndex !== null) {
+      result.splice(addedIndex, 0, itemToAdd);
+    }
+
+    return result;
+  };
+
+  const handleOnColumnDrop = dropResult => {
+    const newColumns = applyDrag([...columns], dropResult);
+    setColumns(newColumns);
+  };
+
+  const handleOnCardDrop = (columnId, dropResult) => {
+    if (dropResult.removedIndex === null && dropResult.addedIndex === null) return;
+
+    const newColumns = [...columns];
+    const columnIndex = newColumns.findIndex(column => column.columnId === columnId);
+    const newColumn = newColumns[columnIndex];
+    newColumn.cards = applyDrag(newColumn.cards, dropResult);
+    newColumns.splice(columnIndex, 1, newColumn);
+
+    setColumns(newColumns);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Stack sx={{ height: '100vh', background: `url(${background}) no-repeat center center` }}>
@@ -58,11 +160,19 @@ function App() {
                 display: 'flex',
                 minWidth: 'unset',
 
+                '& .column-ghost': {
+                  transition: 'transform 0.18s ease',
+                  transform: 'rotateZ(5deg)',
+                },
+
+                '& .column-ghost-drop': {
+                  transition: 'transform 0.18s ease-in-out',
+                  transform: 'rotateZ(0deg)',
+                },
+
                 '& .column-drop-preview': {
                   ml: 2,
                   bgcolor: 'blur.main',
-                  border: '1px dashed',
-                  borderColor: 'background.main',
                   borderRadius: 1,
                 },
               },
@@ -88,51 +198,27 @@ function App() {
                 Add another column
               </Button>
             </Box>
-            <Container
-              groupName='col'
-              orientation='horizontal'
-              onDragStart={e => console.log('drag started', e)}
-              onDragEnd={e => console.log('drag end', e)}
-              onDrop={e => console.log('dop', e)}
-              dragClass='card-ghost'
-              dropClass='card-ghost-drop'
-              onDragEnter={() => {
-                console.log('drag enter:');
-              }}
-              onDragLeave={() => {
-                console.log('drag leave:');
-              }}
-              onDropReady={p => console.log('Drop ready: ', p)}
-              dropPlaceholder={{
-                animationDuration: 150,
-                showOnTop: true,
-                className: 'column-drop-preview',
-              }}
-              dropPlaceholderAnimationDuration={200}
-              lockAxis='x'
-            >
-              <Draggable>
-                <BoardColumn />
-              </Draggable>
-              <Draggable>
-                <BoardColumn />
-              </Draggable>
-              <Draggable>
-                <BoardColumn />
-              </Draggable>
-              <Draggable>
-                <BoardColumn />
-              </Draggable>
-              <Draggable>
-                <BoardColumn />
-              </Draggable>
-              <Draggable>
-                <BoardColumn />
-              </Draggable>
-              <Draggable>
-                <BoardColumn />
-              </Draggable>
-            </Container>
+            {columns.length > 0 && (
+              <Container
+                groupName='col'
+                orientation='horizontal'
+                onDrop={handleOnColumnDrop}
+                dragClass='column-ghost'
+                dropClass='column-ghost-drop'
+                dropPlaceholder={{
+                  animationDuration: 150,
+                  showOnTop: true,
+                  className: 'column-drop-preview',
+                }}
+                dropPlaceholderAnimationDuration={200}
+              >
+                {columns.map(column => (
+                  <Draggable key={column.columnId}>
+                    <BoardColumn data={column} onCardDrop={handleOnCardDrop} getChildPayload={getCardPayload} />
+                  </Draggable>
+                ))}
+              </Container>
+            )}
           </Stack>
         </Stack>
       </Stack>

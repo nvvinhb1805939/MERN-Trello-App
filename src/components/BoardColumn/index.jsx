@@ -1,20 +1,29 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, OutlinedInput, Stack } from '@mui/material';
+import { Box, Button, OutlinedInput, Stack, Typography } from '@mui/material';
 import CardColumn from 'components/CardColumn';
+import PropTypes from 'prop-types';
 import { Container, Draggable } from 'react-smooth-dnd';
 
-BoardColumn.propTypes = {};
+BoardColumn.propTypes = {
+  data: PropTypes.object,
+  onCardDrop: PropTypes.func,
+  getChildPayload: PropTypes.func,
+};
 
-function BoardColumn(props) {
+function BoardColumn({ data = {}, onCardDrop = null, getChildPayload = null }) {
   return (
-    <Box
-      component='article'
-      sx={{ width: 280, height: '100%', ml: 2, color: 'background.contrastText', overflowY: 'hidden' }}
-    >
-      <Stack spacing={1} sx={{ maxHeight: '100%', bgcolor: 'background.main', borderRadius: 1 }}>
+    <Box sx={{ width: 280, height: '100%', ml: 2, color: 'background.contrastText', overflowY: 'hidden' }}>
+      <Stack
+        spacing={1}
+        sx={{
+          maxHeight: '100%',
+          bgcolor: 'background.main',
+          borderRadius: 1,
+        }}
+      >
         <Box sx={{ p: 1, pb: 0 }}>
           <OutlinedInput
-            value='Project Resources'
+            value={data.columnTitle}
             size='small'
             fullWidth
             sx={{
@@ -66,11 +75,11 @@ function BoardColumn(props) {
             },
 
             '& > .smooth-dnd-container.vertical': {
+              '& > .smooth-dnd-draggable-wrapper:first-of-type': { mt: -1 },
+
               '& .card-drop-preview': {
                 mt: 1,
                 bgcolor: 'blur.secondary',
-                border: '1px dashed',
-                borderColor: 'blur.border',
                 borderRadius: 1,
               },
 
@@ -90,48 +99,36 @@ function BoardColumn(props) {
             groupName='sub-col'
             dragClass='card-ghost'
             dropClass='card-ghost-drop'
+            onDrop={dropResult => onCardDrop(data.columnId, dropResult)}
+            getChildPayload={cardIndex => getChildPayload(data.columnId, cardIndex)}
             dropPlaceholder={{
               animationDuration: 150,
               showOnTop: true,
               className: 'card-drop-preview',
             }}
+            dropPlaceholderAnimationDuration={200}
           >
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
-            <Draggable>
-              <CardColumn />
-            </Draggable>
+            {data.cards.length > 0 ? (
+              data.cards.map(card => (
+                <Draggable key={card.cardId}>
+                  <CardColumn data={card} />
+                </Draggable>
+              ))
+            ) : (
+              <Typography
+                variant='body2'
+                sx={{
+                  position: 'absolute',
+                  inset: 0,
+
+                  color: 'background.dark',
+                  textAlign: 'center',
+                  lineHeight: '30px' /* minHeight of container is 30 */,
+                }}
+              >
+                No card here
+              </Typography>
+            )}
           </Container>
         </Box>
         <Box sx={{ p: 1, pt: 0 }}>
