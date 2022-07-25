@@ -1,6 +1,8 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, OutlinedInput, Stack, Typography } from '@mui/material';
+import { Box, Button, Collapse, OutlinedInput, Stack, Typography } from '@mui/material';
 import CardColumn from 'components/CardColumn';
+import InputTitle from 'components/form-controls/InputTitle';
+import { COLUMN_WIDTH } from 'constant';
 import PropTypes from 'prop-types';
 import { Container, Draggable } from 'react-smooth-dnd';
 
@@ -12,7 +14,7 @@ BoardColumn.propTypes = {
 
 function BoardColumn({ data = {}, onCardDrop = null, getChildPayload = null }) {
   return (
-    <Box sx={{ width: 280, height: '100%', ml: 2, color: 'background.contrastText', overflowY: 'hidden' }}>
+    <Box sx={{ width: COLUMN_WIDTH, height: '100%', ml: 2, color: 'background.contrastText', overflowY: 'hidden' }}>
       <Stack
         spacing={1}
         sx={{
@@ -22,33 +24,7 @@ function BoardColumn({ data = {}, onCardDrop = null, getChildPayload = null }) {
         }}
       >
         <Box sx={{ p: 1, pb: 0 }}>
-          <OutlinedInput
-            value={data.columnTitle}
-            size='small'
-            fullWidth
-            sx={{
-              '& > input': {
-                px: 1,
-                py: 0.5,
-
-                fontSize: 14,
-                fontWeight: 600,
-                color: 'background.contrastText',
-
-                '&:focus': {
-                  backgroundColor: 'primary.contrastText',
-
-                  '& + fieldset': {
-                    border: '2px solid',
-                  },
-                },
-              },
-
-              '& > fieldset': {
-                border: 'none',
-              },
-            }}
-          />
+          <InputTitle data={data} />
         </Box>
         <Box
           sx={{
