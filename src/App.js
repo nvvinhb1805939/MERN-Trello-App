@@ -1,16 +1,22 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Fade, Stack } from '@mui/material';
 import { ThemeProvider } from '@mui/system';
 import 'App.css';
 import background from 'assets/imgs/background.jpg';
+import AddColumnForm from 'components/AddColumnForm';
 import BoardColumn from 'components/BoardColumn';
 import Header from 'components/Header';
-import { useState } from 'react';
+import { COLUMN_WIDTH } from 'constant';
+import useClickOutside from 'hooks/useClickOutside';
+import { useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Container, Draggable } from 'react-smooth-dnd';
 import theme from 'styles/Style';
 import { v4 as uuidv4 } from 'uuid';
 
 function App() {
+  const formAddNewColumnRef = useRef(null);
+
   const [columns, setColumns] = useState([
     {
       columnId: uuidv4(),
@@ -73,6 +79,9 @@ function App() {
       cards: [],
     },
   ]);
+  const [showFormAddNewColumn, setShowFormAddNewColumn] = useState(false);
+
+  useClickOutside(formAddNewColumnRef, setShowFormAddNewColumn);
 
   const getCardPayload = (columnId, cardIndex) => columns.find(column => column.columnId === columnId).cards[cardIndex];
 
@@ -110,6 +119,10 @@ function App() {
 
     setColumns(newColumns);
   };
+
+  const handleCancelClick = () => setShowFormAddNewColumn(false);
+
+  const methods = useForm();
 
   return (
     <ThemeProvider theme={theme}>
@@ -178,13 +191,20 @@ function App() {
               },
             }}
           >
-            <Box sx={{ height: 'fit-content', flexShrink: 0 }}>
+            <Box
+              sx={{ position: 'relative', height: 'fit-content', width: COLUMN_WIDTH, flexShrink: 0 }}
+              ref={formAddNewColumnRef}
+            >
               <Button
                 fullWidth
                 startIcon={<AddIcon />}
                 size='small'
+                onClick={() => setShowFormAddNewColumn(true)}
                 sx={{
                   justifyContent: 'flex-start',
+                  px: 2,
+                  py: 1,
+
                   fontSize: 14,
                   textTransform: 'unset',
                   color: 'primary.contrastText',
@@ -195,8 +215,26 @@ function App() {
                   },
                 }}
               >
-                Add another column
+                Add a column
               </Button>
+              <Fade
+                in={showFormAddNewColumn}
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  zIndex: 'tooltip',
+
+                  p: 1,
+                  borderRadius: 1,
+                  bgcolor: 'background.main',
+                }}
+              >
+                <Box>
+                  <AddColumnForm onCancelClick={handleCancelClick} />
+                </Box>
+              </Fade>
             </Box>
             {columns.length > 0 && (
               <Container
