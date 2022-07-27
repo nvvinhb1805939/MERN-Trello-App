@@ -5,21 +5,22 @@ import { Controller } from 'react-hook-form';
 InputTitle.propTypes = {
   control: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
-  data: PropTypes.object,
   sx: PropTypes.object,
   inputProps: PropTypes.object,
 };
 
-function InputTitle({ control, name, data = {}, sx = {}, inputProps = {} }) {
+function InputTitle(props) {
+  const { control = {}, name = '', sx = {}, inputProps = {} } = props;
+
   return (
     <Controller
       control={control}
-      name={name || data.columnTitle}
+      name={name}
       render={({ field: { onChange, onBlur, value }, formState }) => (
         <OutlinedInput
           name={name}
           onChange={onChange}
-          value={value || data.columnTitle}
+          value={value}
           size='small'
           fullWidth
           sx={{
@@ -28,6 +29,8 @@ function InputTitle({ control, name, data = {}, sx = {}, inputProps = {} }) {
               fontSize: 14,
               fontWeight: 600,
               color: 'background.contrastText',
+
+              '&::placeholder': { fontWeight: 'normal', opacity: 0.8 },
 
               '&:focus': {
                 backgroundColor: 'primary.contrastText',

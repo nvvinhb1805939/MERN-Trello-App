@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Button, Collapse, OutlinedInput, Stack, Typography } from '@mui/material';
+import AddColumnForm from 'components/AddColumnForm';
 import CardColumn from 'components/CardColumn';
 import InputTitle from 'components/form-controls/InputTitle';
 import { COLUMN_WIDTH } from 'constant';
@@ -24,7 +25,7 @@ function BoardColumn({ data = {}, onCardDrop = null, getChildPayload = null }) {
         }}
       >
         <Box sx={{ p: 1, pb: 0 }}>
-          <InputTitle data={data} />
+          <AddColumnForm isSubmit={false} defaultValues={data.columnTitle} />
         </Box>
         <Box
           sx={{

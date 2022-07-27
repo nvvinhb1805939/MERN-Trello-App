@@ -9,7 +9,6 @@ import Header from 'components/Header';
 import { COLUMN_WIDTH } from 'constant';
 import useClickOutside from 'hooks/useClickOutside';
 import { useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { Container, Draggable } from 'react-smooth-dnd';
 import theme from 'styles/Style';
 import { v4 as uuidv4 } from 'uuid';
@@ -122,7 +121,15 @@ function App() {
 
   const handleCancelClick = () => setShowFormAddNewColumn(false);
 
-  const methods = useForm();
+  const handleAddNewColumn = newColumnTitle => {
+    const newColumn = {
+      columnId: uuidv4(),
+      columnTitle: newColumnTitle,
+      cards: [],
+    };
+
+    setColumns(currentColumns => [newColumn, ...currentColumns]);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -232,7 +239,23 @@ function App() {
                 }}
               >
                 <Box>
-                  <AddColumnForm onCancelClick={handleCancelClick} />
+                  <AddColumnForm
+                    onAddNewColumn={handleAddNewColumn}
+                    onCancelClick={handleCancelClick}
+                    sx={{
+                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+
+                      '&.MuiOutlinedInput-root > input': {
+                        fontWeight: 'normal',
+                        backgroundColor: 'primary.contrastText',
+
+                        '& + fieldset': {
+                          borderWidth: 2,
+                          borderColor: 'primary.main',
+                        },
+                      },
+                    }}
+                  />
                 </Box>
               </Fade>
             </Box>
