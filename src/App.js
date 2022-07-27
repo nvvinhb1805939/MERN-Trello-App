@@ -245,7 +245,7 @@ function App() {
                     sx={{
                       '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
 
-                      '&.MuiOutlinedInput-root > input': {
+                      '&.MuiOutlinedInput-root > textarea': {
                         fontWeight: 'normal',
                         backgroundColor: 'primary.contrastText',
 
