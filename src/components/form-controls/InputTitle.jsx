@@ -20,11 +20,16 @@ function InputTitle(props) {
         <OutlinedInput
           name={name}
           onChange={onChange}
+          onBlur={onBlur}
           value={value}
           size='small'
           fullWidth
+          multiline
+          inputProps={inputProps}
           sx={{
-            '& > input': {
+            p: 0,
+
+            '& > textarea': {
               p: 1,
               fontSize: 14,
               fontWeight: 600,
@@ -39,6 +44,20 @@ function InputTitle(props) {
                   borderWidth: 2,
                 },
               },
+
+              '&::-webkit-scrollbar': {
+                width: 8,
+
+                '&-thumb': {
+                  backgroundColor: 'scrollbar.lightThumb',
+                  borderRadius: 2,
+                },
+
+                '&-track': {
+                  backgroundColor: 'scrollbar.lightTrack',
+                  borderRadius: 2,
+                },
+              },
             },
 
             '& > fieldset': {
@@ -47,7 +66,6 @@ function InputTitle(props) {
 
             ...sx,
           }}
-          {...inputProps}
         />
       )}
     />

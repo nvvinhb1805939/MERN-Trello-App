@@ -1,0 +1,1 @@
+export const INPUT_TITLE_MAX_LENGTH = 100;
