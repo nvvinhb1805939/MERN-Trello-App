@@ -1,19 +1,34 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Button, Collapse, OutlinedInput, Stack, Typography } from '@mui/material';
-import AddColumnForm from 'components/AddColumnForm';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import AddDataForm from 'components/AddDataForm';
 import CardColumn from 'components/CardColumn';
-import InputTitle from 'components/form-controls/InputTitle';
 import { COLUMN_WIDTH } from 'constant';
+import useClickOutside from 'hooks/useClickOutside';
 import PropTypes from 'prop-types';
+import { useRef, useState } from 'react';
 import { Container, Draggable } from 'react-smooth-dnd';
 
 BoardColumn.propTypes = {
   data: PropTypes.object,
+  onAddNewData: PropTypes.func,
   onCardDrop: PropTypes.func,
   getChildPayload: PropTypes.func,
 };
 
-function BoardColumn({ data = {}, onCardDrop = null, getChildPayload = null }) {
+function BoardColumn(props) {
+  const { onAddNewData = null, data = {}, onCardDrop = null, getChildPayload = null } = props;
+
+  const [showAddDataForm, setShowAddDataForm] = useState(false);
+
+  const formAddNewColumnRef = useRef(null);
+
+  useClickOutside(formAddNewColumnRef, setShowAddDataForm);
+
+  const hanleAddNewCard = newCard => {
+    if (!onAddNewData) return;
+    onAddNewData(data.columnId, newCard);
+  };
+
   return (
     <Box sx={{ width: COLUMN_WIDTH, height: '100%', ml: 2, color: 'background.contrastText', overflowY: 'hidden' }}>
       <Stack
@@ -25,7 +40,7 @@ function BoardColumn({ data = {}, onCardDrop = null, getChildPayload = null }) {
         }}
       >
         <Box sx={{ p: 1, pb: 0 }}>
-          <AddColumnForm isSubmit={false} defaultValues={data.columnTitle} />
+          <AddDataForm isSubmit={false} defaultValues={{ title: data.columnTitle }} />
         </Box>
         <Box
           sx={{
@@ -109,19 +124,43 @@ function BoardColumn({ data = {}, onCardDrop = null, getChildPayload = null }) {
           </Container>
         </Box>
         <Box sx={{ p: 1, pt: 0 }}>
-          <Button
-            fullWidth
-            startIcon={<AddIcon />}
-            size='small'
-            sx={{
-              justifyContent: 'flex-start',
-              fontSize: 14,
-              textTransform: 'unset',
-              color: 'background.dark',
-            }}
-          >
-            Add a card
-          </Button>
+          {showAddDataForm ? (
+            <Box ref={formAddNewColumnRef}>
+              <AddDataForm
+                onAddNewData={hanleAddNewCard}
+                onCancelClick={() => setShowAddDataForm(false)}
+                defaultValues={{ title: '' }}
+                sx={{
+                  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
+
+                  '&.MuiOutlinedInput-root > textarea': {
+                    fontWeight: 'normal',
+                    backgroundColor: 'primary.contrastText',
+
+                    '& + fieldset': {
+                      borderWidth: 2,
+                      borderColor: 'primary.main',
+                    },
+                  },
+                }}
+              />
+            </Box>
+          ) : (
+            <Button
+              onClick={() => setShowAddDataForm(true)}
+              fullWidth
+              startIcon={<AddIcon />}
+              size='small'
+              sx={{
+                justifyContent: 'flex-start',
+                fontSize: 14,
+                textTransform: 'unset',
+                color: 'background.dark',
+              }}
+            >
+              Add a card
+            </Button>
+          )}
         </Box>
       </Stack>
     </Box>

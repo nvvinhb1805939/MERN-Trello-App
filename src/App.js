@@ -3,7 +3,7 @@ import { Box, Button, Fade, Stack } from '@mui/material';
 import { ThemeProvider } from '@mui/system';
 import 'App.css';
 import background from 'assets/imgs/background.jpg';
-import AddColumnForm from 'components/AddColumnForm';
+import AddDataForm from 'components/AddDataForm';
 import BoardColumn from 'components/BoardColumn';
 import Header from 'components/Header';
 import { COLUMN_WIDTH } from 'constant';
@@ -131,6 +131,16 @@ function App() {
     setColumns(currentColumns => [newColumn, ...currentColumns]);
   };
 
+  const handleAddNewCard = (currentColumnId, newCardTitle) => {
+    const newCard = { cardId: uuidv4(), cardTitle: newCardTitle };
+    const currentColumIndex = columns.findIndex(column => column.columnId === currentColumnId);
+    const newColumns = [...columns];
+
+    newColumns[currentColumIndex].cards.push(newCard);
+
+    setColumns(newColumns);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Stack sx={{ height: '100vh', background: `url(${background}) no-repeat center center` }}>
@@ -239,9 +249,10 @@ function App() {
                 }}
               >
                 <Box>
-                  <AddColumnForm
-                    onAddNewColumn={handleAddNewColumn}
+                  <AddDataForm
+                    onAddNewData={handleAddNewColumn}
                     onCancelClick={handleCancelClick}
+                    defaultValues={{ title: '' }}
                     sx={{
                       '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.main' },
 
@@ -275,7 +286,12 @@ function App() {
               >
                 {columns.map(column => (
                   <Draggable key={column.columnId}>
-                    <BoardColumn data={column} onCardDrop={handleOnCardDrop} getChildPayload={getCardPayload} />
+                    <BoardColumn
+                      data={column}
+                      onAddNewData={handleAddNewCard}
+                      onCardDrop={handleOnCardDrop}
+                      getChildPayload={getCardPayload}
+                    />
                   </Draggable>
                 ))}
               </Container>

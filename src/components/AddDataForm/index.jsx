@@ -7,21 +7,21 @@ import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-AddColumnForm.propTypes = {
-  onAddNewColumn: PropTypes.func,
+AddDataForm.propTypes = {
+  onAddNewData: PropTypes.func,
   onCancelClick: PropTypes.func,
   isSubmit: PropTypes.bool,
-  defaultValues: PropTypes.string,
+  defaultValues: PropTypes.object,
   sx: PropTypes.object,
 };
 
-function AddColumnForm(props) {
-  const { onAddNewColumn = null, onCancelClick = null, isSubmit = true, defaultValues = '', sx = {} } = props;
+function AddDataForm(props) {
+  const { onAddNewData = null, onCancelClick = null, isSubmit = true, defaultValues = {}, sx = {} } = props;
 
   const { handleSubmit, control, reset, watch } = useForm({
-    defaultValues: { columnTitle: defaultValues },
+    defaultValues,
   });
-  const watchColumnTitle = watch('columnTitle', defaultValues);
+  const watchTitle = watch('title', defaultValues);
 
   const inputTitleRef = useRef(null);
 
@@ -33,10 +33,10 @@ function AddColumnForm(props) {
     if (!onCancelClick) return;
     onCancelClick();
   };
-  const onSubmit = ({ columnTitle }) => {
-    if (!onAddNewColumn) return;
+  const onSubmit = ({ title }) => {
+    if (!onAddNewData) return;
 
-    onAddNewColumn(columnTitle.trim());
+    onAddNewData(title.trim());
     reset();
   };
 
@@ -45,7 +45,7 @@ function AddColumnForm(props) {
       <Box ref={inputTitleRef} onClick={() => setShowInputTitleLength(true)}>
         <InputTitle
           control={control}
-          name='columnTitle'
+          name='title'
           inputProps={{ placeholder: 'Enter column title...', maxLength: INPUT_TITLE_MAX_LENGTH }}
           sx={sx}
         />
@@ -53,7 +53,7 @@ function AddColumnForm(props) {
 
       {showInputTitleLength && (
         <Typography variant='caption' sx={{ display: 'block', mt: 0.5, textAlign: 'right' }}>
-          {watchColumnTitle.length} / {INPUT_TITLE_MAX_LENGTH}
+          {watchTitle.length} / {INPUT_TITLE_MAX_LENGTH}
         </Typography>
       )}
       {isSubmit && (
@@ -71,4 +71,4 @@ function AddColumnForm(props) {
   );
 }
 
-export default AddColumnForm;
+export default AddDataForm;
